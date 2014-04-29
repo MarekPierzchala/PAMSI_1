@@ -34,23 +34,21 @@ void Graf::generuj_liste(int ilosc, int gestosc)
 	V = ilosc;
 	lista_sasiadujaca = new vector<int>[V];
 	Krawedz pomoc;
+	for (int i = 0; i < V; i++)
 	{
-		for (int i = 0; i < V; i++)
+		for (int j = 0; j < i; j++)
 		{
-			for (int j = 0; j < i; j++)
+			int losowa = rand() % 100;
+			if (losowa < gestosc)//(1)
 			{
-				int losowa = rand() % 100;
-				if (losowa < gestosc)//(1)
-				{
-					int k = rand() % (V * V) + 1;
-					pomoc.poczatek = i;
-					pomoc.koniec = j;
-					pomoc.w = k;
-					lista_krawedzi.push_back(pomoc);
-					lista_sasiadujaca[i].push_back(j);
-					if (i!=j)
-						lista_sasiadujaca[j].push_back(i);
-				}
+				int k = rand() % (V * V) + 1;
+				pomoc.poczatek = i;
+				pomoc.koniec = j;
+				pomoc.w = k;
+				lista_krawedzi.push_back(pomoc);
+				lista_sasiadujaca[i].push_back(j);
+				if (i!=j)
+					lista_sasiadujaca[j].push_back(i);
 			}
 		}
 	}
