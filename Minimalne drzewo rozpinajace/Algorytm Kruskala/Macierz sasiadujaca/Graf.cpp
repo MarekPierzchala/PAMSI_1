@@ -40,21 +40,13 @@ void Graf::generuj_macierz(int ilosc, int gestosc)
 			else
 			{
 				Tablica[i][j] = Tablica[j][i] = 0;//(3)
-				pomoc.poczatek = i;
-				pomoc.koniec = j;
-				pomoc.w = 0;
-				lista_krawedzi.push_back(pomoc);
 			}
-			//lista_krawedzi.push_back(pomoc);
 		}
 	}
 
 	for (int i = 0; i < ilosc; i++)
 	{
 		Tablica[i][i] = 0;
-		pomoc.poczatek = i;
-		pomoc.koniec = i;
-		pomoc.w = 0;
 	}
 }
 
@@ -115,8 +107,8 @@ void Graf::kruskal()
 	while (drzewo.size() < V - 1)
 	{
 		nowa = lista_krawedzi[lista_krawedzi.size() - 1];
-		//cout << endl << "TO MAM: " << nowa.poczatek << " - " << nowa.koniec << " w = " << nowa.w << endl;
 		lista_krawedzi.pop_back();
+
 		if (kolor_wierzcholka[nowa.poczatek] != kolor_wierzcholka[nowa.koniec])
 		{
 			drzewo.push_back(nowa); //dolaczenie krawedzi
