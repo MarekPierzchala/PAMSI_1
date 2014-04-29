@@ -5,6 +5,7 @@
 #include <vector>
 #include <algorithm>
 #include <iomanip>
+#include <Windows.h>
 
 using namespace std;
 
@@ -34,3 +35,5 @@ public:
 
 bool cmp(const Krawedz& x, const Krawedz& y);
 void sortuj_wektor(vector<Krawedz> *wektor);
+LARGE_INTEGER startTimer();
+LARGE_INTEGER endTimer();
