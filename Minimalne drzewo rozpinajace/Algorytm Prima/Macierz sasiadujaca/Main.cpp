@@ -6,10 +6,16 @@ int main()
 {
 	Graf tab1;
 	ofstream plik("wnioski1q2.csv");
+	bool pom = false;
 
 	//tab1.stworz_macierz_sasiedztwa("plik1.txt");
-	tab1.generuj_macierz(4, 61);
-	tab1.wyswietl();
+	while (pom != true)
+	{
+		tab1.generuj_macierz(8192, 50);
+		pom = tab1.czy_spojny();
+	}
+	cout << endl;
+	//tab1.wyswietl();
 
 	LARGE_INTEGER performanceCountStart, performanceCountEnd;
 	LARGE_INTEGER Freq, TimeDiff;

@@ -6,6 +6,7 @@
 #include <windows.h>
 #include <algorithm>
 #include <iomanip>
+#include <stack>
 
 using namespace std;
 
@@ -25,11 +26,13 @@ public:
 	int E; // krawedzie
 	vector<Krawedz> lista_krawedzi; // wektor krawedzi 
 	vector<Krawedz> drzewo;  // drzewo do alg Kruskala
+	stack<int> stos;
 public:
 	void generuj_macierz(int ilosc, int gestosc);
 	void stworz_macierz_sasiedztwa(string nazwapliku);
 	void wyswietl();
 	void kruskal();
+	bool czy_spojny();
 	~Graf();
 };
 

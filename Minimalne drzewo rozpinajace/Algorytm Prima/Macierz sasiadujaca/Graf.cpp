@@ -12,6 +12,53 @@ void sortuj_wektor(vector<Krawedz> *wektor)
 	sort(wektor->begin(), wektor->end(), cmp);
 }
 
+bool Graf::czy_spojny()
+{
+	int licznik = 0;
+	int pomoc;
+
+	bool *wizyta = new bool[V];
+	for (int i = 0; i < V; i++)
+		wizyta[i] = false;
+
+	pomoc = 0;
+	stos.push(pomoc);
+
+	while (!stos.empty())
+	{
+		pomoc = stos.top();
+		stos.pop();
+		if (wizyta[pomoc] != true)
+		{
+			wizyta[pomoc] = true;
+			for (int j = 0; j < V; j++)
+			{
+				int druga;
+				if (Tablica[pomoc][j] != 0)
+				{
+					druga = j;
+					if (wizyta[druga] != true)
+						stos.push(druga);
+				}
+
+			}
+			licznik++;
+		}
+
+	}
+	if (licznik == V)
+	{
+		cout << endl << "GRAF JEST SPOJNY! " << endl;
+		return true;
+	}
+	else
+	{
+		cout << endl << "GRAF NIE JEST SPOJNY! " << endl;
+		return false;
+	}
+	delete[] wizyta;
+}
+
 void Graf::generuj_macierz(int ilosc, int gestosc)
 {
 	V = ilosc;  // liczba wierzcholkow 
@@ -95,6 +142,8 @@ void Graf::prim()
 	for (int i = 0; i < V; i++)
 		kolor_wierzcholka[i] = i;  // koloruje wierzcholki 
 
+	priority_queue<Krawedz, vector<Krawedz>, PorownajKrawedzie> lista;
+
 	while (drzewo.size() < V - 1)
 	{
 		nowa.poczatek = wierzcholek;
@@ -106,16 +155,19 @@ void Graf::prim()
 			{
 				nowa.koniec = i;
 				nowa.w = Tablica[wierzcholek][i];
-				lista_krawedzi.push_back(nowa);
+				//lista_krawedzi.push_back(nowa);
+				lista.push(nowa);
 			}
 		}
 
-		sortuj_wektor(&lista_krawedzi); // sortuje krawedzie odwrotnie, bo z vectora zdejmuje sie od tylu
+		//sortuj_wektor(&lista_krawedzi); // sortuje krawedzie odwrotnie, bo z vectora zdejmuje sie od tylu
 
 		for (bool cykl = true; cykl;)
 		{
-			nowa = lista_krawedzi[lista_krawedzi.size() - 1];  // biore najkrotsza krawedz
-			lista_krawedzi.pop_back();
+			//nowa = lista_krawedzi[lista_krawedzi.size() - 1];  // biore najkrotsza krawedz
+			//lista_krawedzi.pop_back();
+			nowa = lista.top();
+			lista.pop();
 
 			if ((kolor_wierzcholka[nowa.poczatek] == 0 && kolor_wierzcholka[nowa.koniec] != 0) || (kolor_wierzcholka[nowa.poczatek] != 0 && kolor_wierzcholka[nowa.koniec] == 0))
 				cykl = false;

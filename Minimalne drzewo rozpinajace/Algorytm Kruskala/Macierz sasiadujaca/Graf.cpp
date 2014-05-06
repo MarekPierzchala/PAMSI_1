@@ -137,6 +137,53 @@ Graf::~Graf()
 	delete[] Tablica;
 }
 
+bool Graf::czy_spojny()
+{
+	int licznik = 0;
+	int pomoc;
+
+	bool *wizyta = new bool[V];
+	for (int i = 0; i < V; i++)
+		wizyta[i] = false;
+
+	pomoc = 0;
+	stos.push(pomoc);
+
+	while (!stos.empty())
+	{
+		pomoc = stos.top();
+		stos.pop();
+		if (wizyta[pomoc] != true)
+		{
+			wizyta[pomoc] = true;
+			for (int j = 0; j < V; j++)
+			{
+				int druga;
+				if (Tablica[pomoc][j] != 0)
+				{
+					druga = j;
+					if (wizyta[druga] != true)
+						stos.push(druga);
+				}
+
+			}
+			licznik++;
+		}
+
+	}
+	if (licznik == V)
+	{
+		cout << endl << "GRAF JEST SPOJNY! " << endl;
+		return true;
+	}
+	else
+	{
+		cout << endl << "GRAF NIE JEST SPOJNY! " << endl;
+		return false;
+	}
+	delete[] wizyta;
+}
+
 
 LARGE_INTEGER startTimer()
 {

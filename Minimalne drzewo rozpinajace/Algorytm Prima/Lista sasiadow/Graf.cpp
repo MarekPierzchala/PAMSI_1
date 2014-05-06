@@ -12,6 +12,7 @@ void sortuj_wektor(vector<Krawedz> *wektor)
 	sort(wektor->begin(), wektor->end(), cmp);
 }
 
+
 void Graf::stworz_liste_z_pliku(string nazwapliku)
 {
 	ifstream plik;
@@ -21,21 +22,64 @@ void Graf::stworz_liste_z_pliku(string nazwapliku)
 	plik >> V;  // liczba wierzcholkow
 	plik >> E;  // liczba krawedzi
 	lista_sasiadujaca = new vector<Wierzcholek>[V];
-	lista_sasiedztwa = new vector<int>[V];
 	while (plik >> v1 >> v2 >> wg)
 	{
 		pomoc.sasiad = v2;
 		pomoc.waga = wg;
 		lista_sasiadujaca[v1].push_back(pomoc);
-		lista_sasiedztwa[v1].push_back(v2);
 		if (v1 != v2)
 		{
 			pomoc.sasiad = v1;
 			pomoc.waga = wg;
 			lista_sasiadujaca[v2].push_back(pomoc);
-			lista_sasiedztwa[v2].push_back(v1);
 		}
 	}
+}
+
+bool Graf::czy_spojny()
+{
+	Wierzcholek pomoc;
+	int licznik = 0;
+
+	bool *wizyta = new bool[V];
+	for (int i = 0; i < V; i++)
+		wizyta[i] = false;
+
+	pomoc.waga = lista_sasiadujaca[0][0].waga;
+	pomoc.sasiad = lista_sasiadujaca[0][0].sasiad;
+	stos.push(pomoc);
+
+	while (!stos.empty())
+	{
+		pomoc = stos.top();
+		stos.pop();
+		if (wizyta[pomoc.sasiad] != true)
+		{
+			wizyta[pomoc.sasiad] = true;
+			for (int j = 0; j < lista_sasiadujaca[pomoc.sasiad].size(); j++)
+			{
+				Wierzcholek druga;
+				druga.waga = lista_sasiadujaca[pomoc.sasiad][j].waga;
+				druga.sasiad = lista_sasiadujaca[pomoc.sasiad][j].sasiad;
+				if (wizyta[druga.sasiad] != true)
+					stos.push(druga);
+
+			}
+			licznik++;
+		}
+		
+	}
+	if (licznik == V)
+	{
+		cout << endl << "GRAF JEST SPOJNY! " << endl;
+		return true;
+	}
+	else
+	{
+		cout << endl << "GRAF NIE JEST SPOJNY! " << endl;
+		return false;
+	}
+	delete[] wizyta;
 }
 
 void Graf::generuj_liste(int ilosc, int gestosc)
@@ -43,7 +87,6 @@ void Graf::generuj_liste(int ilosc, int gestosc)
 	V = ilosc;
 	Wierzcholek pomoc;
 	lista_sasiadujaca = new vector<Wierzcholek>[V];
-	lista_sasiedztwa = new vector<int>[V];
 	for (int i = 0; i < V; i++)
 	{
 		for (int j = 0; j < i; j++)
@@ -55,18 +98,26 @@ void Graf::generuj_liste(int ilosc, int gestosc)
 				pomoc.sasiad = j;
 				pomoc.waga = k;
 				lista_sasiadujaca[i].push_back(pomoc);
-				lista_sasiedztwa[i].push_back(j);
 				if (i != j)
 				{
 					pomoc.sasiad = i;
 					pomoc.waga = k;
 					lista_sasiadujaca[j].push_back(pomoc);
-					lista_sasiedztwa[j].push_back(i);
 				}
 				
 			}
 		}
 	}
+	for (int i = 0; i <= 1; i++)
+	{
+		if (lista_sasiadujaca[i].empty())
+		{
+			pomoc.sasiad = 0;
+			pomoc.waga = 0;
+			lista_sasiadujaca[0].push_back(pomoc);
+		}
+	}
+
 }
 
 void Graf::wyswietl()
@@ -74,9 +125,9 @@ void Graf::wyswietl()
 	for (int i = 0; i < V; i++)
 	{
 		cout << endl << setw(2) << i << ":";
-		for (vector<int>::iterator it = lista_sasiedztwa[i].begin(); it != lista_sasiedztwa[i].end(); it++)
+		for (int j = 0; j < lista_sasiadujaca[i].size(); j++)
 		{
-			cout << " " << *it;
+			cout << setw(2) << lista_sasiadujaca[i][j].waga;
 		}
 	}
 	cout << endl;
@@ -92,6 +143,7 @@ void Graf::prim()
 	for (int i = 0; i < V; i++)
 		kolor_wierzcholka[i] = i;  // koloruje wierzcholki 
 
+	priority_queue<Krawedz, vector<Krawedz>, PorownajKrawedzie> lista;
 	while (drzewo.size() < V - 1)
 	{
 		nowa.poczatek = wierzcholek;
@@ -102,17 +154,19 @@ void Graf::prim()
 			{
 				nowa.koniec = lista_sasiadujaca[wierzcholek][i].sasiad;
 				nowa.w = lista_sasiadujaca[wierzcholek][i].waga;
-				lista_krawedzi.push_back(nowa);
+				//lista_krawedzi.push_back(nowa);
+				lista.push(nowa);
 			}
 		}
 
-		sortuj_wektor(&lista_krawedzi); // sortuje krawedzie odwrotnie, bo z vectora zdejmuje sie od tylu
+		//sortuj_wektor(&lista_krawedzi); // sortuje krawedzie odwrotnie, bo z vectora zdejmuje sie od tylu
 
 		for (bool cykl = true; cykl;)
 		{
-			nowa = lista_krawedzi[lista_krawedzi.size() - 1];  // biore najkrotsza krawedz
-			lista_krawedzi.pop_back();
-
+			//nowa = lista_krawedzi[lista_krawedzi.size() - 1];  // biore najkrotsza krawedz
+			//lista_krawedzi.pop_back();
+			nowa = lista.top();
+			lista.pop();
 			if ((kolor_wierzcholka[nowa.poczatek] == 0 && kolor_wierzcholka[nowa.koniec] != 0) || (kolor_wierzcholka[nowa.poczatek] != 0 && kolor_wierzcholka[nowa.koniec] == 0))
 				cykl = false;
 		}
@@ -133,6 +187,16 @@ void Graf::prim()
 	delete[] kolor_wierzcholka;
 }
 
+
+Wierzcholek &Wierzcholek::operator= (Wierzcholek const& c1)
+{
+	Wierzcholek tmp;
+	tmp.sasiad = c1.sasiad;
+	tmp.waga = c1.waga;
+	sasiad = c1.sasiad;
+	waga = c1.waga;
+	return tmp;
+}
 
 Graf::~Graf()
 {
