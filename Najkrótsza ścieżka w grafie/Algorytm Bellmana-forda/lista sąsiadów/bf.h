@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include <iostream>
 #include <fstream>
@@ -22,10 +22,11 @@ public:
 	Wierzcholek &operator= (Wierzcholek const& c1);
 };
 
-struct Wezel
+struct Krawedz
 {
-	int nr; // numer wierzcholka
-	int g; // droga 
+	int poczatek;
+	int koniec;
+	int waga;
 };
 
 class Graf
@@ -39,22 +40,11 @@ public:
 	void stworz_liste_z_pliku(string nazwapliku);
 	bool czy_spojny();
 	void wyswietl();
-	int dijkstry(int a, int b);
+	void Graf::bf();
 	~Graf();
 };
 
-struct por
-{
-	bool operator ()(const Wezel & k1, const Wezel& k2)
-	{
-		//kolejność - rosnąco
-		if (k1.g > k2.g) return true;
 
-		if (k1.g < k2.g) return false;
-
-		return false;
-	}
-};
 
 LARGE_INTEGER startTimer();
 LARGE_INTEGER endTimer();

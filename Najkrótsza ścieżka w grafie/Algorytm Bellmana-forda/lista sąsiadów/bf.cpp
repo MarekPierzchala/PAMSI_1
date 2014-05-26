@@ -1,4 +1,4 @@
-﻿#include "Dijkstry.h"
+#include "bf.h"
 
 using namespace std;
 
@@ -123,93 +123,64 @@ void Graf::wyswietl()
 	cout << endl;
 }
 
-int Graf::dijkstry(int a, int b)
+void Graf::bf()
 {
-	int d;
-	priority_queue<Wezel, vector<Wezel>, por > S;  // zbior wierzcholkow 
-	bool *odwiedzone = new bool[V];  // tablica odwiedzonych wierzcholkow
-	bool *czy_w_kolejce = new bool[V]; // tablica, ktora sprawdza, czy dany wezel jest juz w kolejce priorytetowej
+	Krawedz pomoc;
 	int *droga = new int[V];  // tablica z poprzednimi wierzcholkami 
-	Wezel *koszt = new Wezel[V];   // tablica z wierzcholkami, po ktorych sie poruszamy  
-
-	for (int i = 0; i < V; i++){
-		droga[i] = -1;      // wierzcholek, ktorego na pewno nie ma w grafie 
-		odwiedzone[i] = false;
-		czy_w_kolejce[i] = false;
-		koszt[i].g = 123245325325235235;  // wartosc, zawsze wieksza od drogi 
-		koszt[i].nr = i;  // numeruje wierzcholki 
-	}
-
-	koszt[a].g = 0;  // wartosc drogi do poczatkowego wierzcholka ustawiam na zero
-	S.push(koszt[a]);  // dodaje pierwszy wierzcholek do zbioru
-
-	while (!S.empty())
-	{
-		Wezel y = S.top();
-		int x = y.nr;
-		S.pop();
-		czy_w_kolejce[x] = false;  // sciagamy wezel z kolejki 
-		for (int i = 0; i < lista_sasiadujaca[x].size(); i++)
-		{
-			if (odwiedzone[lista_sasiadujaca[x][i].sasiad] == false)
-			{
-				if (koszt[lista_sasiadujaca[x][i].sasiad].g > koszt[x].g + lista_sasiadujaca[x][i].waga)
-				{
-					koszt[lista_sasiadujaca[x][i].sasiad].g = koszt[x].g + lista_sasiadujaca[x][i].waga;
-					droga[lista_sasiadujaca[x][i].sasiad] = x;
-				}
-				if (czy_w_kolejce[lista_sasiadujaca[x][i].sasiad] == false)  // sprawdzam, czy dany wezel juz nie jest w kolejce
-				{
-					S.push(koszt[lista_sasiadujaca[x][i].sasiad]);  // dodaje sasiadow
-					czy_w_kolejce[lista_sasiadujaca[x][i].sasiad] = true;  // wezel jest juz w kolejce 
-				}
-			}
-			odwiedzone[x] = true;  // ustawiam odwiedzony wierzcholek
-		}
-		/*if (odwiedzone[b] == true)
-		{
-			cout << endl << "koszt dojscia z " << a << " do " << b << ": " << koszt[b].g;
-			cout << endl << "Droga: " << b;
-			d = b;
-			while (droga[d] != a)
-			{
-				d = droga[d];
-				cout << ">" << d;
-			}
-			cout << ">" << a;
-			return 0;
-		}*/
-	}
-
-	cout << "Koszty dojscia z wierzcholka startowego do pozostalych: " << endl << "numer wierzcholka: koszt" << endl;
+	int *odl = new int[V];   // tablica, zapisujaca najkrotsza sciezke 
+	vector<Krawedz> lista_krawedzi;  // zbior wszystkich krawedzi
 	for (int i = 0; i < V; i++)
 	{
-		if (i == a)
-			i = i + 1;
+		for (int j = 0; j < lista_sasiadujaca[i].size(); j++)
+		{
+			pomoc.poczatek = i;
+			pomoc.koniec = lista_sasiadujaca[i][j].sasiad;
+			pomoc.waga = lista_sasiadujaca[i][j].waga;
+			lista_krawedzi.push_back(pomoc);
+		}
+	}
+	for (int i = 0; i < V; i++){
+		droga[i] = -1;      // wierzcholek, ktorego na pewno nie ma w grafie 
+		odl[i] = 123245325325235235;  // nieskonczonosc 
+	}
+
+	odl[0] = 0;
+
+	for (int i = 0; i < V; i++)
+	{
+		for (int j = 0; j < lista_krawedzi.size(); j++)
+		{
+			if (odl[lista_krawedzi[j].koniec] > odl[lista_krawedzi[j].poczatek] + lista_krawedzi[j].waga)
+			{
+				odl[lista_krawedzi[j].koniec] = odl[lista_krawedzi[j].poczatek] + lista_krawedzi[j].waga;
+				droga[lista_krawedzi[j].koniec] = lista_krawedzi[j].poczatek;
+			}
+		}
+	}
+	
+	cout << "Koszty dojscia z wierzcholka 0 do pozostalych: " << endl << "numer wierzcholka: koszt" << endl;
+	for (int i = 1; i < V; i++)
+	{
 		cout << i << ": ";
 		int zm;
 		zm = i;
 		cout << i << ">";
-		if (droga[i] != a)
+		if (droga[i] != 0)
 		{
-			while (droga[i] != a)
+			while (droga[i] != 0)
 			{
 				i = droga[i];
 				cout << i << ">";
 			}
 		}
-		cout << a;
+		cout << 0;
 		i = zm;
-		cout << " = " << koszt[i].g << endl;
-
+		cout << " = " << odl[i] << endl;
 	}
-	return 0;
 
-	delete[] czy_w_kolejce;
-	delete[] odwiedzone;
-	delete[] koszt;
+	delete[] odl;
 	delete[] droga;
-	
+
 }
 
 Wierzcholek &Wierzcholek::operator= (Wierzcholek const& c1)

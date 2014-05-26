@@ -10,8 +10,8 @@ int main()
 	
 	while (pom != true)
 	{
-		//tab.stworz_macierz_sasiedztwa("plik1.txt");
-		tab.generuj_macierz(92, 50);
+		tab.stworz_macierz_sasiedztwa("plik2.txt");
+		//tab.generuj_macierz(1000, 100);
 		pom = tab.czy_spojny();
 	}
 	cout << endl;
@@ -21,7 +21,7 @@ int main()
 	LARGE_INTEGER Freq, TimeDiff;
 	performanceCountStart = startTimer(); //zapamiętujemy czas początkowy  
 
-	tab.dijkstry();
+	tab.dijkstry(0, 5);
 
 	performanceCountEnd = endTimer(); //zapamiętujemy koniec czasu 
 	QueryPerformanceFrequency(&Freq);

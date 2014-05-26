@@ -1,4 +1,4 @@
-﻿#include "Dijkstry.h"
+﻿#include "bf.h"
 
 using namespace std;
 
@@ -7,21 +7,21 @@ int main()
 	Graf tab;
 	bool pom = false;
 
-	
+
 	//tab.wyswietl();
 	while (pom != true)
 	{
 		//tab.stworz_liste_z_pliku("plik2.txt");
-		tab.generuj_liste(1000, 100);
+		tab.generuj_liste(1000, 80);
 		pom = tab.czy_spojny();
 	}
 	//tab.wyswietl();
-	
+
 	LARGE_INTEGER performanceCountStart, performanceCountEnd;
 	LARGE_INTEGER Freq, TimeDiff;
 	performanceCountStart = startTimer(); //zapamiętujemy czas początkowy  
 
-	tab.dijkstry(0, 5);
+	tab.bf();
 
 	performanceCountEnd = endTimer(); //zapamiętujemy koniec czasu 
 	QueryPerformanceFrequency(&Freq);
