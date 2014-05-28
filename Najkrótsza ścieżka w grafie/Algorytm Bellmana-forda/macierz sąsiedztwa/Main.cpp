@@ -6,7 +6,7 @@ int main()
 {
 	Graf tab;
 	bool pom = false;
-
+	double czas = 0;
 
 	while (pom != true)
 	{
@@ -17,21 +17,26 @@ int main()
 	cout << endl;
 	//tab.wyswietl();
 
-	LARGE_INTEGER performanceCountStart, performanceCountEnd;
-	LARGE_INTEGER Freq, TimeDiff;
-	performanceCountStart = startTimer(); //zapamiętujemy czas początkowy  
+	for (int i = 0; i < 5; i++)
+	{
+		LARGE_INTEGER performanceCountStart, performanceCountEnd;
+		LARGE_INTEGER Freq, TimeDiff;
+		performanceCountStart = startTimer(); //zapamiętujemy czas początkowy  
 
-	tab.bf();
+		tab.bf();
 
-	performanceCountEnd = endTimer(); //zapamiętujemy koniec czasu 
-	QueryPerformanceFrequency(&Freq);
-	long long tm = performanceCountEnd.QuadPart - performanceCountStart.QuadPart;
-	TimeDiff.QuadPart = performanceCountEnd.QuadPart - performanceCountStart.QuadPart;
-	double DeltaTime = (double)TimeDiff.QuadPart / (double)Freq.QuadPart;
-	cout << endl << "Czas:" << DeltaTime << "[s]" << endl;//---
-	//cout<<endl<<"Czas:"<<DeltaTime*1000<<"[ms]"<<endl;//---
-	//cout<<endl<<"Czas:"<<DeltaTime*1000000<<"[us]"<<endl;//---
-	//cout<<endl<<"Czas:"<<DeltaTime*1000000000<<"[ns]"<<endl;//---
+		performanceCountEnd = endTimer(); //zapamiętujemy koniec czasu 
+		QueryPerformanceFrequency(&Freq);
+		long long tm = performanceCountEnd.QuadPart - performanceCountStart.QuadPart;
+		TimeDiff.QuadPart = performanceCountEnd.QuadPart - performanceCountStart.QuadPart;
+		double DeltaTime = (double)TimeDiff.QuadPart / (double)Freq.QuadPart;
+		//cout << endl << "Czas:" << DeltaTime << "[s]" << endl;//---
+		//cout<<endl<<"Czas:"<<DeltaTime*1000<<"[ms]"<<endl;//---
+		//cout<<endl<<"Czas:"<<DeltaTime*1000000<<"[us]"<<endl;//---
+		//cout<<endl<<"Czas:"<<DeltaTime*1000000000<<"[ns]"<<endl;//---
+		czas += DeltaTime;
+	}
+	cout << endl << "Czas: " << (czas / 5) * 1000 << "[ms]" << endl;
 
 	system("pause");
 }

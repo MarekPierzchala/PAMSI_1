@@ -158,7 +158,7 @@ void Graf::bf()
 		}
 	}
 	
-	cout << "Koszty dojscia z wierzcholka 0 do pozostalych: " << endl << "numer wierzcholka: koszt" << endl;
+	/*cout << "Koszty dojscia z wierzcholka 0 do pozostalych: " << endl << "numer wierzcholka: koszt" << endl;
 	for (int i = 1; i < V; i++)
 	{
 		cout << i << ": ";
@@ -176,7 +176,7 @@ void Graf::bf()
 		cout << 0;
 		i = zm;
 		cout << " = " << odl[i] << endl;
-	}
+	}*/
 
 	delete[] odl;
 	delete[] droga;

@@ -123,10 +123,16 @@ void Graf::wyswietl()
 	cout << endl;
 }
 
+bool operator < (const Wezel &k1, const Wezel &k2)
+{
+	return (k1.g > k2.g);
+}
+
+
 int Graf::dijkstry(int a, int b)
 {
-	int d;
-	priority_queue<Wezel, vector<Wezel>, por > S;  // zbior wierzcholkow 
+	boost::heap::fibonacci_heap<Wezel> Q;  // kopiec fibonacciego 
+	boost::heap::fibonacci_heap<Wezel>::handle_type *handle = new boost::heap::fibonacci_heap<Wezel>::handle_type[V]; // tablica uchwytow 
 	bool *odwiedzone = new bool[V];  // tablica odwiedzonych wierzcholkow
 	bool *czy_w_kolejce = new bool[V]; // tablica, ktora sprawdza, czy dany wezel jest juz w kolejce priorytetowej
 	int *droga = new int[V];  // tablica z poprzednimi wierzcholkami 
@@ -141,13 +147,13 @@ int Graf::dijkstry(int a, int b)
 	}
 
 	koszt[a].g = 0;  // wartosc drogi do poczatkowego wierzcholka ustawiam na zero
-	S.push(koszt[a]);  // dodaje pierwszy wierzcholek do zbioru
+	handle[a] = Q.push(koszt[a]);  // dodaje wierzcholek poczatkowy na stos i uchwyt do niego
 
-	while (!S.empty())
+	while (!Q.empty())
 	{
-		Wezel y = S.top();
+		Wezel y = Q.top();
 		int x = y.nr;
-		S.pop();
+		Q.pop();
 		czy_w_kolejce[x] = false;  // sciagamy wezel z kolejki 
 		for (int i = 0; i < lista_sasiadujaca[x].size(); i++)
 		{
@@ -157,10 +163,20 @@ int Graf::dijkstry(int a, int b)
 				{
 					koszt[lista_sasiadujaca[x][i].sasiad].g = koszt[x].g + lista_sasiadujaca[x][i].waga;
 					droga[lista_sasiadujaca[x][i].sasiad] = x;
+
+					if (czy_w_kolejce[lista_sasiadujaca[x][i].sasiad] == false)  // sprawdzam, czy dany wezel juz nie jest w kolejce
+					{
+						handle[koszt[lista_sasiadujaca[x][i].sasiad].nr] = Q.push(koszt[lista_sasiadujaca[x][i].sasiad]); // dodaje sasiadow i dodaje uchwyt na sasiada
+						czy_w_kolejce[lista_sasiadujaca[x][i].sasiad] = true;  // wezel jest juz w kolejce 
+					}
+					else
+					{
+						Q.update(handle[koszt[lista_sasiadujaca[x][i].sasiad].nr], koszt[lista_sasiadujaca[x][i].sasiad]);  // aktualizuje wierzcholek
+					}
 				}
 				if (czy_w_kolejce[lista_sasiadujaca[x][i].sasiad] == false)  // sprawdzam, czy dany wezel juz nie jest w kolejce
 				{
-					S.push(koszt[lista_sasiadujaca[x][i].sasiad]);  // dodaje sasiadow
+					handle[koszt[lista_sasiadujaca[x][i].sasiad].nr] = Q.push(koszt[lista_sasiadujaca[x][i].sasiad]); // dodaje sasiadow i dodaje uchwyt na sasiada
 					czy_w_kolejce[lista_sasiadujaca[x][i].sasiad] = true;  // wezel jest juz w kolejce 
 				}
 			}
@@ -181,7 +197,7 @@ int Graf::dijkstry(int a, int b)
 		}*/
 	}
 
-	cout << "Koszty dojscia z wierzcholka startowego do pozostalych: " << endl << "numer wierzcholka: koszt" << endl;
+	/*cout << "Koszty dojscia z wierzcholka startowego do pozostalych: " << endl << "numer wierzcholka: koszt" << endl;
 	for (int i = 0; i < V; i++)
 	{
 		if (i == a)
@@ -202,9 +218,10 @@ int Graf::dijkstry(int a, int b)
 		i = zm;
 		cout << " = " << koszt[i].g << endl;
 
-	}
+	}*/
 	return 0;
 
+	delete[] handle;
 	delete[] czy_w_kolejce;
 	delete[] odwiedzone;
 	delete[] koszt;

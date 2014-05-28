@@ -7,8 +7,9 @@
 #include <iomanip>
 #include <Windows.h>
 #include <stack>
-#include <queue>
-#include <conio.h>
+//#include <queue>
+//#include <conio.h>
+#include <boost/heap/fibonacci_heap.hpp>  // fibonacci z boost
 
 using namespace std;
 
@@ -17,6 +18,7 @@ struct Wierzcholek
 	int nr; // numer wierzcholka
 	int g; // droga 
 };
+
 
 class Graf
 {
@@ -33,17 +35,6 @@ public:
 	~Graf();
 };
 
-struct por
-{
-	bool operator ()(const Wierzcholek & k1, const Wierzcholek& k2)
-	{
-		//kolejność - rosnąco
-		if (k1.g > k2.g) return true;
 
-		if (k1.g < k2.g) return false;
-
-		return false;
-	}
-};
 LARGE_INTEGER startTimer();
 LARGE_INTEGER endTimer();

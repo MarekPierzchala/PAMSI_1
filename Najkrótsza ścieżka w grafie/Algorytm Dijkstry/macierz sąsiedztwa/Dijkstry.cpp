@@ -2,6 +2,7 @@
 
 using namespace std;
 
+
 void Graf::generuj_macierz(int ilosc, int gestosc)
 {
 	V = ilosc;  // liczba wierzcholkow 
@@ -123,11 +124,16 @@ bool Graf::czy_spojny()
 	delete[] wizyta;
 }
 
+bool operator < (const Wierzcholek &k1, const Wierzcholek &k2)
+{
+	return (k1.g > k2.g);
+}
+
 
 int Graf::dijkstry(int a, int b)
 {
-	int d;
-	priority_queue<Wierzcholek, vector<Wierzcholek>, por > S;  // zbior wierzcholkow 
+	boost::heap::fibonacci_heap<Wierzcholek> Q;  // kopiec fibonacciego 
+	boost::heap::fibonacci_heap<Wierzcholek>::handle_type *handle = new boost::heap::fibonacci_heap<Wierzcholek>::handle_type[V]; // tablica uchwytow 
 	bool *odwiedzone = new bool[V];  // tablica odwiedzonych wierzcholkow
 	bool *czy_w_kolejce = new bool[V]; // tablica, ktora sprawdza, czy dany wezel jest juz w kolejce priorytetowej
 	int *droga = new int[V];  // tablica z poprzednimi wierzcholkami 
@@ -140,15 +146,13 @@ int Graf::dijkstry(int a, int b)
 		koszt[i].g = 123245325325235235;  // wartosc, zawsze wieksza od drogi 
 		koszt[i].nr = i;  // numeruje wierzcholki 
 	}
-
-	
 	koszt[a].g = 0;  // wartosc drogi do poczatkowego wierzcholka ustawiam na zero
-	S.push(koszt[a]);  // dodaje pierwszy wierzcholek do zbioru
-	while (!S.empty())
+	handle[a] = Q.push(koszt[a]);  // dodaje wierzcholek poczatkowy na stos i uchwyt do niego
+	while (!Q.empty())
 	{
-		Wierzcholek y = S.top();
+		Wierzcholek y = Q.top();
 		int x = y.nr;
-		S.pop();
+		Q.pop();
 		czy_w_kolejce[x] = false;  // sciagamy wezel z kolejki 
 		for (int i = 0; i < V; i++)
 		{
@@ -158,10 +162,19 @@ int Graf::dijkstry(int a, int b)
 				{
 					koszt[i].g = koszt[x].g + Tablica[x][i];
 					droga[i] = x;
+					if (czy_w_kolejce[i] == false)  // sprawdzam, czy dany wezel juz nie jest w kolejce
+					{
+						handle[koszt[i].nr] = Q.push(koszt[i]); // dodaje sasiadow i dodaje uchwyt na sasiada
+						czy_w_kolejce[i] = true;  // wezel jest juz w kolejce 
+					}
+					else
+					{
+						Q.update(handle[koszt[i].nr], koszt[i]);  // aktualizuje wierzcholek
+					}
 				}
 				if (czy_w_kolejce[i] == false)  // sprawdzam, czy dany wezel juz nie jest w kolejce
 				{
-					S.push(koszt[i]);  // dodaje sasiadow
+					handle[koszt[i].nr] = Q.push(koszt[i]); // dodaje sasiadow i dodaje uchwyt na sasiada
 					czy_w_kolejce[i] = true;  // wezel jest juz w kolejce 
 				}
 			}
@@ -183,7 +196,7 @@ int Graf::dijkstry(int a, int b)
 		}*/
 	}
 
-	cout << "Koszty dojscia z wierzcholka startowego do pozostalych: " << endl << "numer wierzcholka: koszt" << endl;
+	/*cout << "Koszty dojscia z wierzcholka startowego do pozostalych: " << endl << "numer wierzcholka: koszt" << endl;
 	for (int i = 0; i < V; i++)
 	{
 		if (i == a)
@@ -204,8 +217,9 @@ int Graf::dijkstry(int a, int b)
 		i = zm;
 		cout << " = " << koszt[i].g << endl;
 		
-	}
+	}*/
 	return 0;
+	delete[] handle;
 	delete[] czy_w_kolejce;
 	delete[] odwiedzone;
 	delete[] koszt;

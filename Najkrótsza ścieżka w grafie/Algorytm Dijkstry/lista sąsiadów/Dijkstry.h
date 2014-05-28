@@ -7,8 +7,7 @@
 #include <iomanip>
 #include <Windows.h>
 #include <stack>
-#include <queue>
-#include <conio.h>
+#include <boost/heap/fibonacci_heap.hpp>  // fibonacci z boost
 
 using namespace std;
 
