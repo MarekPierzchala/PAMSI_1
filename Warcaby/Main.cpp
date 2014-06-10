@@ -11,7 +11,7 @@ int main()
 	bool ruch = false;
 	while (1)
 	{
-		warcaby.graj();
+		warcaby.rozgrywka();
 	}
 
 	system("pause");

@@ -5,51 +5,47 @@ using namespace std;
 void gra::graj()
 {
 	int kto = aktualny;
-	while (1)
+	miejsce poczatkowe;
+	miejsce docelowe;
+	cout << "Teraz kolej gracza " << "(" << kto << ")" << endl;
+	cout << "Ktory pionek chcesz przesunac ?" << endl;
+	cin >> poczatkowe.x >> poczatkowe.y;
+	cout << endl << "W ktore miejsce? " << endl;
+	cin >> docelowe.x >> docelowe.y;
+	if (czy_bicie_damki(poczatkowe) == true)
 	{
-		wyswietl();
-		miejsce poczatkowe;
-		miejsce docelowe;
-		cout << "Teraz kolej gracza " << "(" << kto << ")" << endl;
-		cout << "Ktory pionek chcesz przesunac ?" << endl;
-		cin >> poczatkowe.x >> poczatkowe.y;
-		cout << endl << "W ktore miejsce? " << endl;
-		cin >> docelowe.x >> docelowe.y;
-		if (czy_ruch(kto, poczatkowe, docelowe) == true)
+		bicie_damki(poczatkowe, docelowe);
+	}
+	if (czy_ruch_damki(poczatkowe) == true)
+	{
+		ruch_damki(poczatkowe, docelowe);
+	}
+	if (czy_ruch(kto, poczatkowe, docelowe) == true)
+	{
+		wykonaj_ruch(kto, poczatkowe, docelowe);
+	}
+	else
+	{
+		if (czy_bicie(kto, poczatkowe, docelowe) == true)
 		{
-			wykonaj_ruch(kto, poczatkowe, docelowe);
+			wykonaj_bicie(kto, poczatkowe, docelowe);
 		}
 		else
 		{
-			if (czy_bicie(kto, poczatkowe, docelowe) == true)
-			{
-				wykonaj_bicie(kto, poczatkowe, docelowe);
-			}
-			else
-			{
-				cout << "WCHODZE!" << endl;
-				graj();
-			}
-		}
-		if (kto == 1)
-		{
-			kto = 2;
-			aktualny = 2;
-		}
-		else
-		{
-			kto = 1;
-			aktualny = 1;
+			cout << "WCHODZE!" << endl;
+			graj();
 		}
 	}
+	damka_dwa();
+	aktualny = 1;
 
 }
 
 gra::gra()
 {
 	aktualny = 2;
-	biale = 8;
-	czarne = 8;
+	jedynki = 8;
+	dwojki = 8;
 	for (int i = 0; i < 8; i++)  // ustawia puste pola
 	{
 		for (int j = 0; j < 8; j++)
@@ -122,14 +118,14 @@ bool gra::czy_bicie(int kto, miejsce poczatkowe, miejsce docelowe)
 	{
 		if (Plansza[poczatkowe.x][poczatkowe.y] != 1)  // sprawdza czy jest tam bialy pionek
 		{
-			cout << "Blad! Podales zle wspolrzedne, tu nie ma pionka 2, sprobuje jeszcze raz" << endl;
+			//cout << "Blad! Podales zle wspolrzedne, tu nie ma pionka 2, sprobuje jeszcze raz" << endl;
 			return false;
 		}
 		if (poczatkowe.x == 0)
 		{
 			if (docelowe.x != 2)
 			{
-				cout << "Blad! Niedozwolony ruch, sprobuje jeszcze raz  QQQ" << endl;
+				//cout << "Blad! Niedozwolony ruch, sprobuje jeszcze raz  QQQ" << endl;
 				return false;
 			}
 		}
@@ -137,20 +133,20 @@ bool gra::czy_bicie(int kto, miejsce poczatkowe, miejsce docelowe)
 		{
 			if (docelowe.x != poczatkowe.x + 2)
 			{
-				cout << "Blad! Niedozwolony ruch, sprobuje jeszcze raz WWW" << endl;
+				//cout << "Blad! Niedozwolony ruch, sprobuje jeszcze raz WWW" << endl;
 				return false;
 			}
 		}
 		if (Plansza[docelowe.x][docelowe.y] != 0)
 		{
-			cout << "Blad! Pole zajete, sprobuje jeszcze raz EEE" << endl;
+			//cout << "Blad! Pole zajete, sprobuje jeszcze raz EEE" << endl;
 			return false;
 		}
 		if (docelowe.y > poczatkowe.y)
 		{
 			if (Plansza[docelowe.x - 1][docelowe.y - 1] != 2)
 			{
-				cout << "Blad! Co ty chcesz zbic? RRR" << endl;
+				//cout << "Blad! Co ty chcesz zbic? RRR" << endl;
 				return false;
 			}
 		}
@@ -158,7 +154,7 @@ bool gra::czy_bicie(int kto, miejsce poczatkowe, miejsce docelowe)
 		{
 			if (Plansza[docelowe.x - 1][docelowe.y + 1] != 2)
 			{
-				cout << "Blad! Co ty chcesz zbic? TTT" << endl;
+				//cout << "Blad! Co ty chcesz zbic? TTT" << endl;
 				return false;
 			}
 		}
@@ -167,16 +163,16 @@ bool gra::czy_bicie(int kto, miejsce poczatkowe, miejsce docelowe)
 
 	if (kto == 2)  // pionek bialy
 	{
-		if (Plansza[poczatkowe.x][poczatkowe.y] != 2)  // sprawdza czy jest tam bialy pionek
+		if (Plansza[poczatkowe.x][poczatkowe.y] != 2  )  // sprawdza czy jest tam bialy pionek
 		{
-			cout << "Blad! Podales zle wspolrzedne, tu nie ma pionka 2, sprobuj jeszcze raz" << endl;
+			//cout << "Blad! Podales zle wspolrzedne, tu nie ma pionka 2, sprobuj jeszcze raz" << endl;
 			return false;
 		}
 		if (poczatkowe.x == 7)
 		{
 			if (docelowe.x != 5)
 			{
-				cout << "Blad! Niedozwolony ruch, sprobuje jeszcze raz YYY" << endl;
+				//cout << "Blad! Niedozwolony ruch, sprobuje jeszcze raz YYY" << endl;
 				return false;
 			}
 		}
@@ -184,20 +180,20 @@ bool gra::czy_bicie(int kto, miejsce poczatkowe, miejsce docelowe)
 		{
 			if (docelowe.x != poczatkowe.x - 2)
 			{ 
-				cout << "Blad! Niedozwolony ruch, sprobuje jeszcze raz UUU" << endl;
+				//cout << "Blad! Niedozwolony ruch, sprobuje jeszcze raz UUU" << endl;
 				return false;
 			}
 		}
 		if (Plansza[docelowe.x][docelowe.y] != 0)
 		{
-			cout << "Blad! Pole zajete, sprobuje jeszcze raz III" << endl;
+			//cout << "Blad! Pole zajete, sprobuje jeszcze raz III" << endl;
 			return false;
 		}
 		if (docelowe.y > poczatkowe.y)
 		{
 			if (Plansza[docelowe.x + 1][docelowe.y - 1] != 1)
 			{
-				cout << "Blad! Co ty chcesz zbic? OOO" << endl;
+				//cout << "Blad! Co ty chcesz zbic? OOO" << endl;
 				return false;
 			}
 		}
@@ -205,7 +201,7 @@ bool gra::czy_bicie(int kto, miejsce poczatkowe, miejsce docelowe)
 		{
 			if (Plansza[docelowe.x + 1][docelowe.y + 1] != 1)
 			{
-				cout << "Blad! Co ty chcesz zbic? PPP" << endl;
+				//cout << "Blad! Co ty chcesz zbic? PPP" << endl;
 				return false;
 			}
 		}
@@ -287,7 +283,7 @@ bool gra::czy_ruch(int kto, miejsce poczatkowe, miejsce docelowe)
 
 	if (kto == 2)  // pionek bialy
 	{
-		if (Plansza[poczatkowe.x][poczatkowe.y] != 2)  // sprawdza czy jest tam bialy pionek
+		if ((Plansza[poczatkowe.x][poczatkowe.y] != 2) && (Plansza[poczatkowe.x][poczatkowe.y] != 8))  // sprawdza czy jest tam bialy pionek
 		{
 			cout << "Blad! Podales zle wspolrzedne, tu nie ma pionka 2, sprobuje jeszcze raz KKK" << endl;
 			return false;
@@ -355,12 +351,12 @@ void gra::wykonaj_bicie(int kto, miejsce poczatkowe, miejsce docelowe)
 			if (docelowe.y > poczatkowe.y)
 			{
 				Plansza[docelowe.x - 1][docelowe.y - 1] = 0;
-				biale--;
+				//dwojki--;
 			}
 			else
 			{
 				Plansza[docelowe.x - 1][docelowe.y + 1] = 0;
-				biale--;
+				//dwojki--;
 			}
 		}
 		else
@@ -368,12 +364,12 @@ void gra::wykonaj_bicie(int kto, miejsce poczatkowe, miejsce docelowe)
 			if (docelowe.y > poczatkowe.y)
 			{
 				Plansza[docelowe.x + 1][docelowe.y - 1] = 0;
-				biale--;
+				//dwojki--;
 			}
 			else
 			{
 				Plansza[docelowe.x + 1][docelowe.y + 1] = 0;
-				biale--;
+				//dwojki--;
 			}
 		}
 	}
@@ -387,12 +383,12 @@ void gra::wykonaj_bicie(int kto, miejsce poczatkowe, miejsce docelowe)
 			if (docelowe.y > poczatkowe.y)
 			{
 				Plansza[docelowe.x - 1][docelowe.y - 1] = 0;
-				czarne--;
+				//jedynki--;
 			}
 			else
 			{
 				Plansza[docelowe.x - 1][docelowe.y + 1] = 0;
-				czarne--;
+				//jedynki--;
 			}
 		}
 		else
@@ -400,14 +396,109 @@ void gra::wykonaj_bicie(int kto, miejsce poczatkowe, miejsce docelowe)
 			if (docelowe.y > poczatkowe.y)
 			{
 				Plansza[docelowe.x + 1][docelowe.y - 1] = 0;
-				czarne--;
+				//jedynki--;
 			}
 			else
 			{
 				Plansza[docelowe.x + 1][docelowe.y + 1] = 0;
-				czarne--;
+				//jedynki--;
 			}
 		}
 	}
 
+}
+
+void gra::damka_dwa()
+{
+	for (int j = 0; j < 8; j++)
+	{
+		if (Plansza[0][j] == 2)
+			Plansza[0][j] = 8;
+	}
+}
+
+bool gra::czy_bicie_damki(miejsce pozycja)
+{
+	int x = pozycja.x; int y = pozycja.y;
+	if (Plansza[x][y] == 8 && (Plansza[x - 1][y - 1] == 1 || Plansza[x - 1][y - 1] == 7) && Plansza[x - 2][y - 2] == 0)
+		return true;
+	if (Plansza[x][y] == 8 && (Plansza[x - 1][y + 1] == 1 || Plansza[x - 1][y + 1] == 7) && Plansza[x - 2][y + 2] == 0)
+		return true;
+	if (Plansza[x][y] == 8 && (Plansza[x + 1][y - 1] == 1 || Plansza[x + 1][y - 1] == 7) && Plansza[x + 2][y - 2] == 0)
+		return true;
+	if (Plansza[x][y] == 8 && (Plansza[x + 1][y + 1] == 1 || Plansza[x + 1][y + 1] == 7) && Plansza[x + 2][y + 2] == 0)
+		return true;
+
+	return false;
+}
+
+void gra::bicie_damki(miejsce poczatkowe, miejsce docelowe)
+{
+	if (poczatkowe.x > docelowe.x)
+	{
+		if (poczatkowe.y > docelowe.y)
+		{
+			Plansza[poczatkowe.x][poczatkowe.y] = 0;
+			Plansza[docelowe.x][docelowe.y] = 8;
+			Plansza[docelowe.x + 1][docelowe.y + 1] = 0;
+		}
+		else
+		{
+			Plansza[poczatkowe.x][poczatkowe.y] = 0;
+			Plansza[docelowe.x][docelowe.y] = 8;
+			Plansza[docelowe.x + 1][docelowe.y - 1] = 0;
+		}
+	}
+	else
+	{
+		if (poczatkowe.y > docelowe.y)
+		{
+			Plansza[poczatkowe.x][poczatkowe.y] = 0;
+			Plansza[docelowe.x][docelowe.y] = 8;
+			Plansza[docelowe.x - 1][docelowe.y + 1] = 0;
+		}
+		else
+		{
+			Plansza[poczatkowe.x][poczatkowe.y] = 0;
+			Plansza[docelowe.x][docelowe.y] = 8;
+			Plansza[docelowe.x - 1][docelowe.y - 1] = 0;
+		}
+	}
+}
+
+void gra::ruch_damki(miejsce poczatkowe, miejsce docelowe)
+{
+	Plansza[poczatkowe.x][poczatkowe.y] = 0;
+	Plansza[docelowe.x][docelowe.y] = 8;
+}
+
+bool gra::czy_ruch_damki(miejsce pozycja)
+{
+	int x = pozycja.x; int y = pozycja.y;
+	if (Plansza[x][y] == 8  && Plansza[x - 1][y - 1] == 0)
+		return true;
+	if (Plansza[x][y] == 8  && Plansza[x - 1][y + 1] == 0)
+		return true;
+	if (Plansza[x][y] == 8  && Plansza[x + 1][y - 1] == 0)
+		return true;
+	if (Plansza[x][y] == 8  && Plansza[x + 1][y + 1] == 0)
+		return true;
+
+	return false;
+}
+
+void gra::zlicz()
+{
+	jedynki = 0;
+	dwojki = 0;
+	for (int i = 0; i < 8; i++)
+	{
+		for (int j = 0; j < 8; j++)
+		{
+			if (Plansza[i][j] == 1 || Plansza[i][j] == 7)
+				jedynki++;
+			if (Plansza[i][j] == 2 || Plansza[i][j] == 8)
+				dwojki++;
+		}
+	}
 }
